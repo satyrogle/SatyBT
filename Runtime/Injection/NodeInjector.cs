@@ -65,7 +65,7 @@ namespace SatyBT
                 return false;
 
             handle.Target.Remove(handle.Node);
-            handle.Node.Reset();
+            handle.Node.Abort();
             _active.Remove(id);
 
             handle.RaiseRemoved();

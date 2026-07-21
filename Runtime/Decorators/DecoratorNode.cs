@@ -11,5 +11,19 @@ namespace SatyBT
         {
             Child = child;
         }
+
+        /// <summary>Reset this decorator and its child back to idle.</summary>
+        internal override void Reset()
+        {
+            base.Reset();
+            Child?.Reset();
+        }
+
+        /// <summary>Abort this decorator and its child, cascading cleanup.</summary>
+        internal override void Abort()
+        {
+            base.Abort();
+            Child?.Abort();
+        }
     }
 }

@@ -46,5 +46,21 @@ namespace SatyBT
         {
             return _children.Remove(child);
         }
+
+        /// <summary>Reset this composite and every child back to idle.</summary>
+        internal override void Reset()
+        {
+            base.Reset();
+            for (int i = 0; i < _children.Count; i++)
+                _children[i].Reset();
+        }
+
+        /// <summary>Abort this composite and every child, cascading cleanup.</summary>
+        internal override void Abort()
+        {
+            base.Abort();
+            for (int i = 0; i < _children.Count; i++)
+                _children[i].Abort();
+        }
     }
 }

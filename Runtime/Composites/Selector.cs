@@ -33,5 +33,10 @@ namespace SatyBT
         {
             _currentChild = 0;
         }
+
+        protected override void OnReset()
+        {
+            _currentChild = 0;
+        }
     }
 }

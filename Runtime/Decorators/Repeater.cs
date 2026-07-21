@@ -47,5 +47,10 @@ namespace SatyBT
         {
             _currentCount = 0;
         }
+
+        protected override void OnReset()
+        {
+            _currentCount = 0;
+        }
     }
 }
