@@ -8,9 +8,12 @@ namespace SatyBT
     /// write state through the blackboard. External systems can subscribe
     /// to key changes via <see cref="Subscribe"/>.
     ///
-    /// Reads and writes use a Dictionary internally. No boxing occurs
-    /// for value types because each typed key maps to a typed entry.
-    /// Subscriptions are stored per-key in a pre-allocated list.
+    /// Reads (<see cref="Get{T}"/> / <see cref="TryGet{T}"/>) do not allocate:
+    /// unboxing a value type out of the backing store copies, it does not
+    /// allocate. Writing a value type via <see cref="Set{T}"/> boxes it into
+    /// the object-typed store, so hot tick paths should prefer reading state
+    /// and writing only when it changes. Subscriptions are stored per-key in
+    /// a pre-allocated list and dispatched with an index loop, not foreach.
     /// </summary>
     public sealed class Blackboard
     {
@@ -24,12 +27,42 @@ namespace SatyBT
             NotifySubscribers(key);
         }
 
-        /// <summary>Get a value. Returns default(T) if the key is missing.</summary>
+        /// <summary>
+        /// Get a value. Returns default(T) if the key is missing, or if the
+        /// stored value is not assignable to T. In the editor and development
+        /// builds a type mismatch (key present but wrong type) logs a warning;
+        /// the release tick path is unaffected.
+        /// </summary>
         public T Get<T>(string key)
         {
-            if (_data.TryGetValue(key, out object value) && value is T typed)
-                return typed;
+            if (_data.TryGetValue(key, out object value))
+            {
+                if (value is T typed)
+                    return typed;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                UnityEngine.Debug.LogWarning(
+                    $"[SatyBT.Blackboard] Key '{key}' holds " +
+                    $"{(value == null ? "null" : value.GetType().Name)} but " +
+                    $"{typeof(T).Name} was requested. Returning default({typeof(T).Name}).");
+#endif
+            }
             return default;
+        }
+
+        /// <summary>
+        /// Try to get a value. Returns true and sets <paramref name="value"/>
+        /// only when the key exists and its stored value is assignable to T.
+        /// Never logs; use this when a missing or mistyped key is expected.
+        /// </summary>
+        public bool TryGet<T>(string key, out T value)
+        {
+            if (_data.TryGetValue(key, out object stored) && stored is T typed)
+            {
+                value = typed;
+                return true;
+            }
+            value = default;
+            return false;
         }
 
         /// <summary>Check whether a key exists.</summary>
