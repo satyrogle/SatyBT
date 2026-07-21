@@ -2,7 +2,7 @@
   "name": "com.satyrogle.behaviour-tree",
   "version": "1.0.0",
   "displayName": "SatyBT",
-  "description": "A code-first, zero-GC behaviour tree framework for Unity with runtime node injection.",
+  "description": "A code-first, zero-GC behaviour tree framework for Unity with reactive observer aborts, runtime node injection, and an editor tree debugger.",
   "unity": "2021.3",
   "keywords": [
     "behaviour-tree",
@@ -31,6 +31,11 @@
       "displayName": "Dynamic Injection",
       "description": "DifficultyDirector injecting behaviours into a running tree.",
       "path": "Samples~/DynamicInjection"
+    },
+    {
+      "displayName": "Stealth Guard",
+      "description": "Full feature set: observer aborts, cooldown-gated investigate, and coordinator-driven injection.",
+      "path": "Samples~/StealthGuard"
     }
   ]
 }
