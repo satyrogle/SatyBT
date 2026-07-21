@@ -11,9 +11,9 @@ on:
 # the package is checked out under Packages/, a manifest embeds it (plus the
 # test framework), and unity-test-runner points at that project root.
 #
-# GameCI needs a Unity license. Add a repository secret named UNITY_LICENSE
-# containing the contents of a Personal .ulf license file.
-# Activation guide: https://game.ci/docs/github/activation
+# GameCI needs Unity account credentials. Add two repository secrets:
+#   UNITY_EMAIL    — your Unity account email
+#   UNITY_PASSWORD — your Unity account password
 #
 # All tests are plain [Test] (edit mode) methods, so only the editmode leg runs.
 # Add a playmode job here if [UnityTest] coroutine tests are introduced later.
@@ -52,7 +52,8 @@ jobs:
       - name: Run editmode tests
         uses: game-ci/unity-test-runner@v4
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           # Pin to the 2021.3 LTS patch the package targets.
           unityVersion: 2021.3.45f1
