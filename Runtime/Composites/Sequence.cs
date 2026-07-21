@@ -9,6 +9,12 @@ namespace SatyBT
     {
         private int _currentChild;
 
+        /// <summary>Create an empty sequence; add children with AddChild.</summary>
+        public Sequence() : base(8) { }
+
+        /// <summary>Create a sequence with the given children, in order.</summary>
+        public Sequence(params NodeBase[] children) : base(children) { }
+
         public override BTStatus Tick()
         {
             for (; _currentChild < ChildCount; _currentChild++)

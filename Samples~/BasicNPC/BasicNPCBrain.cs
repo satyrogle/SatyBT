@@ -17,12 +17,12 @@ namespace SatyBT.Samples
         {
             _runner = gameObject.AddComponent<BehaviourTreeRunner>();
 
-            var root = new Selector()
-                .AddChild(BuildAttackBranch())
-                .AddChild(BuildChaseBranch())
-                .AddChild(BuildPatrolBranch());
+            var root = new Selector(
+                BuildAttackBranch(),
+                BuildChaseBranch(),
+                BuildPatrolBranch());
 
-            var tree = new BehaviourTree((NodeBase)root);
+            var tree = new BehaviourTree(root);
 
             // Seed some initial blackboard values
             tree.Blackboard.Set("hasTarget", false);
@@ -33,10 +33,10 @@ namespace SatyBT.Samples
 
         private NodeBase BuildAttackBranch()
         {
-            return (NodeBase)new Sequence()
-                .AddChild(new Condition(() =>
-                    _runner.Tree.Blackboard.Get<float>("targetDistance") <= _attackRange))
-                .AddChild(new ActionNode(() =>
+            return new Sequence(
+                new Condition(() =>
+                    _runner.Tree.Blackboard.Get<float>("targetDistance") <= _attackRange),
+                new ActionNode(() =>
                 {
                     Debug.Log("Attacking!");
                     return BTStatus.Success;
@@ -45,12 +45,12 @@ namespace SatyBT.Samples
 
         private NodeBase BuildChaseBranch()
         {
-            return (NodeBase)new Sequence()
-                .AddChild(new Condition(() =>
-                    _runner.Tree.Blackboard.Get<bool>("hasTarget")))
-                .AddChild(new Condition(() =>
-                    _runner.Tree.Blackboard.Get<float>("targetDistance") <= _chaseRange))
-                .AddChild(new ActionNode(() =>
+            return new Sequence(
+                new Condition(() =>
+                    _runner.Tree.Blackboard.Get<bool>("hasTarget")),
+                new Condition(() =>
+                    _runner.Tree.Blackboard.Get<float>("targetDistance") <= _chaseRange),
+                new ActionNode(() =>
                 {
                     Debug.Log("Chasing target...");
                     return BTStatus.Running;

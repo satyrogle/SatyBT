@@ -18,6 +18,21 @@ namespace SatyBT
             _children = new List<NodeBase>(initialCapacity);
         }
 
+        /// <summary>
+        /// Construct with an initial set of children, added in order.
+        /// Enables fluent tree building without repeated AddChild calls.
+        /// </summary>
+        protected CompositeNode(params NodeBase[] children)
+        {
+            int capacity = children != null && children.Length > 8 ? children.Length : 8;
+            _children = new List<NodeBase>(capacity);
+            if (children != null)
+            {
+                for (int i = 0; i < children.Length; i++)
+                    AddChild(children[i]);
+            }
+        }
+
         public CompositeNode AddChild(NodeBase child)
         {
             child.Blackboard = Blackboard;

@@ -9,6 +9,12 @@ namespace SatyBT
     {
         private int _currentChild;
 
+        /// <summary>Create an empty selector; add children with AddChild.</summary>
+        public Selector() : base(8) { }
+
+        /// <summary>Create a selector with the given children, in priority order.</summary>
+        public Selector(params NodeBase[] children) : base(children) { }
+
         public override BTStatus Tick()
         {
             for (; _currentChild < ChildCount; _currentChild++)

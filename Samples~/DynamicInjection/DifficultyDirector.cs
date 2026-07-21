@@ -34,14 +34,14 @@ namespace SatyBT.Samples
             var tree = _targetNPC.Tree;
 
             // Build a small subtree to inject
-            var enrageSequence = new Sequence()
-                .AddChild(new ActionNode(() =>
+            var enrageSequence = new Sequence(
+                new ActionNode(() =>
                 {
                     tree.Blackboard.Set("isEnraged", true);
                     Debug.Log("[Director] NPC enraged!");
                     return BTStatus.Success;
-                }))
-                .AddChild(new ActionNode(() =>
+                }),
+                new ActionNode(() =>
                 {
                     Debug.Log("[Director] NPC attacking with fury!");
                     return BTStatus.Running;
@@ -52,7 +52,7 @@ namespace SatyBT.Samples
             {
                 var handle = tree.Injector.Inject(
                     id: "enrage_phase",
-                    node: (NodeBase)enrageSequence,
+                    node: enrageSequence,
                     target: rootComposite,
                     position: 0,
                     durationTicks: _injectionDurationTicks
