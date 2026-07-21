@@ -67,6 +67,16 @@ namespace SatyBT
         internal bool IsRunning => _isRunning;
 
         /// <summary>
+        /// Status returned by this node's most recent tick. Undefined until
+        /// <see cref="HasTicked"/> is true. Exposed for the editor debugger
+        /// and other tooling; not used by the tick logic itself.
+        /// </summary>
+        public BTStatus LastStatus { get; private set; }
+
+        /// <summary>True once this node has been ticked at least once.</summary>
+        public bool HasTicked { get; private set; }
+
+        /// <summary>
         /// Called by the tree each frame. Manages enter/exit lifecycle
         /// around the subclass <see cref="Tick"/> implementation.
         /// </summary>
@@ -79,6 +89,9 @@ namespace SatyBT
             }
 
             BTStatus status = Tick(deltaTime);
+
+            LastStatus = status;
+            HasTicked = true;
 
             if (status != BTStatus.Running)
             {
