@@ -5,14 +5,9 @@
 A code-first, zero-GC behaviour tree framework for Unity, with reactive
 observer aborts and runtime node injection.
 
-> **[Demo GIF placeholder — record from the StealthGuard sample.]**
 > Attach `StealthGuardDemo` to an empty GameObject and press Play: guards
 > patrol, investigate noises, and chase on sight, and a coordinator injects a
 > group-wide alert when the player is spotted.
-
-> The CI badge stays unknown/failing until a `UNITY_LICENSE` secret is added to
-> the repository — see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
-> and the [GameCI activation guide](https://game.ci/docs/github/activation).
 
 ## Why SatyBT
 
@@ -145,8 +140,6 @@ Open **Window > SatyBT > Tree Debugger** in Play mode, pick a
 last status (Running yellow, Success green, Failure grey, never-ticked dim),
 injected nodes show their id and remaining ticks, and a side panel lists live
 blackboard entries and active injections.
-
-> **[Debugger screenshot placeholder.]**
 
 ## Architecture
 
