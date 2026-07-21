@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ main ]
 
+# unity-test-runner posts results as a check run via GITHUB_TOKEN,
+# which needs checks: write (the default token is read-only).
+permissions:
+  contents: read
+  checks: write
+
 # This repo IS a UPM package, not a Unity project, so GameCI cannot open the
 # repo root directly. Instead we scaffold a minimal host project in the runner:
 # the package is checked out under Packages/, a manifest embeds it (plus the
