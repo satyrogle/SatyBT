@@ -47,10 +47,12 @@ namespace SatyBT
 
             var handle = new InjectionHandle(id, node, target, expiresAt);
 
-            // Propagate the tree's blackboard to the injected node
+            // Propagate the tree's blackboard to the injected node, then
+            // activate it so any observers inside it subscribe immediately.
             _tree.PropagateBlackboard(node);
 
             target.Insert(position, node);
+            node.Activate();
             _active[id] = handle;
 
             handle.RaiseInjected();
@@ -65,6 +67,7 @@ namespace SatyBT
                 return false;
 
             handle.Target.Remove(handle.Node);
+            handle.Node.Deactivate();
             handle.Node.Abort();
             _active.Remove(id);
 

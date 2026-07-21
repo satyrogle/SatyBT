@@ -11,6 +11,14 @@ namespace SatyBT
         /// <summary>Shared data store propagated from the owning tree.</summary>
         public Blackboard Blackboard { get; internal set; }
 
+        /// <summary>
+        /// The composite or decorator that owns this node, or null for the
+        /// tree root. Maintained by the parent as children are added,
+        /// inserted, or removed. Used to locate the nearest composite ancestor
+        /// for observer aborts.
+        /// </summary>
+        internal NodeBase Parent { get; set; }
+
         /// <summary>Called once when the node first receives a tick after being idle.</summary>
         protected virtual void OnEnter() { }
 
@@ -31,6 +39,19 @@ namespace SatyBT
         protected virtual void OnAbort() { }
 
         /// <summary>
+        /// Called when this node becomes part of a live tree — once when the
+        /// tree is constructed, or when a subtree is injected. Nodes that watch
+        /// external state (see <see cref="ObserverDecorator"/>) subscribe here.
+        /// </summary>
+        protected virtual void OnActivated() { }
+
+        /// <summary>
+        /// Called when this node is removed from a live tree. Counterpart to
+        /// <see cref="OnActivated"/>; unsubscribe here.
+        /// </summary>
+        protected virtual void OnDeactivated() { }
+
+        /// <summary>
         /// Evaluate this node. Must return Success, Failure, or Running.
         /// <paramref name="deltaTime"/> is the time in seconds since the
         /// previous tick, threaded down from the tree so time-based nodes
@@ -41,6 +62,9 @@ namespace SatyBT
         // ── Internal lifecycle tracking ──────────────────────────────
 
         private bool _isRunning;
+
+        /// <summary>True while this node has entered and not yet exited.</summary>
+        internal bool IsRunning => _isRunning;
 
         /// <summary>
         /// Called by the tree each frame. Manages enter/exit lifecycle
@@ -90,5 +114,32 @@ namespace SatyBT
             _isRunning = false;
             OnReset();
         }
+
+        /// <summary>
+        /// Activate this node and its whole subtree, firing OnActivated on
+        /// each. Called once when the tree is constructed and by the injector
+        /// when a subtree is inserted.
+        /// </summary>
+        internal void Activate()
+        {
+            OnActivated();
+            ActivateChildren();
+        }
+
+        /// <summary>
+        /// Deactivate this node and its whole subtree, firing OnDeactivated on
+        /// each. Called by the injector when a subtree is removed.
+        /// </summary>
+        internal void Deactivate()
+        {
+            DeactivateChildren();
+            OnDeactivated();
+        }
+
+        /// <summary>Cascade Activate to children. Overridden by container nodes.</summary>
+        private protected virtual void ActivateChildren() { }
+
+        /// <summary>Cascade Deactivate to children. Overridden by container nodes.</summary>
+        private protected virtual void DeactivateChildren() { }
     }
 }

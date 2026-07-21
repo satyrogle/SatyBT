@@ -20,6 +20,7 @@ namespace SatyBT
             Blackboard = new Blackboard();
             Injector = new NodeInjector(this);
             PropagateBlackboard(root);
+            root.Activate();
         }
 
         /// <summary>

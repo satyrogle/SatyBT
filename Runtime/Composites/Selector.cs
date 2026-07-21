@@ -17,6 +17,8 @@ namespace SatyBT
 
         public override BTStatus Tick(float deltaTime)
         {
+            _currentChild = ConsumePendingInterrupt(_currentChild);
+
             for (; _currentChild < ChildCount; _currentChild++)
             {
                 BTStatus status = GetChild(_currentChild).Update(deltaTime);

@@ -10,6 +10,8 @@ namespace SatyBT
         protected DecoratorNode(NodeBase child)
         {
             Child = child;
+            if (child != null)
+                child.Parent = this;
         }
 
         /// <summary>Reset this decorator and its child back to idle.</summary>
@@ -25,5 +27,9 @@ namespace SatyBT
             base.Abort();
             Child?.Abort();
         }
+
+        private protected override void ActivateChildren() => Child?.Activate();
+
+        private protected override void DeactivateChildren() => Child?.Deactivate();
     }
 }
