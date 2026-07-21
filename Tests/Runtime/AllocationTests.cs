@@ -1,4 +1,6 @@
 using NUnit.Framework;
+using UnityEngine.TestTools.Constraints; // AllocatingGCMemory() extension
+using Is = UnityEngine.TestTools.Constraints.Is; // disambiguate from NUnit's Is
 
 namespace SatyBT.Tests
 {
@@ -18,8 +20,7 @@ namespace SatyBT.Tests
             for (int i = 0; i < 10; i++)
                 tree.Tick(0.016f);
 
-            Assert.That(() => { tree.Tick(0.016f); },
-                UnityEngine.TestTools.Constraints.Is.Not.AllocatingGCMemory());
+            Assert.That(() => { tree.Tick(0.016f); }, Is.Not.AllocatingGCMemory());
         }
 
         private static BehaviourTree BuildTree()
