@@ -1,0 +1,36 @@
+{
+  "name": "com.satyrogle.behaviour-tree",
+  "version": "1.0.0",
+  "displayName": "SatyBT",
+  "description": "A code-first, zero-GC behaviour tree framework for Unity with runtime node injection.",
+  "unity": "2021.3",
+  "keywords": [
+    "behaviour-tree",
+    "ai",
+    "game-ai",
+    "behavior-tree",
+    "npc",
+    "decision-making"
+  ],
+  "author": {
+    "name": "Sanjay Jacob Sulegonker",
+    "url": "https://github.com/satyrogle"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/satyrogle/SatyBT.git"
+  },
+  "samples": [
+    {
+      "displayName": "Basic NPC",
+      "description": "Patrol-chase-attack behaviour tree setup.",
+      "path": "Samples~/BasicNPC"
+    },
+    {
+      "displayName": "Dynamic Injection",
+      "description": "DifficultyDirector injecting behaviours into a running tree.",
+      "path": "Samples~/DynamicInjection"
+    }
+  ]
+}
