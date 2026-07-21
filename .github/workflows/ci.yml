@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# NOTE: GameCI needs a Unity license to run. Add a repository secret named
+# UNITY_LICENSE containing the contents of a Personal .ulf license file.
+# Activation guide: https://game.ci/docs/github/activation
+# Until that secret exists this workflow will fail/stay unknown — the badge in
+# the README reflects that.
+#
+# This runs the package's own asmdef tests. GameCI treats the repository root
+# as the Unity project; if you consume SatyBT from a separate host project you
+# may prefer to point projectPath at that project instead.
+
+jobs:
+  test:
+    name: Test (${{ matrix.testMode }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode: [ editmode, playmode ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ matrix.testMode }}
+          restore-keys: |
+            Library-
+
+      - name: Run ${{ matrix.testMode }} tests
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          # Pin to the 2021.3 LTS patch your project uses.
+          unityVersion: 2021.3.45f1
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test results (${{ matrix.testMode }})
+          path: ${{ matrix.testMode }}-artifacts

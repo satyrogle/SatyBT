@@ -1,6 +1,12 @@
 # SatyBT
 
+[![CI](https://github.com/satyrogle/SatyBT/actions/workflows/ci.yml/badge.svg)](https://github.com/satyrogle/SatyBT/actions/workflows/ci.yml)
+
 A code-first, zero-GC behaviour tree framework for Unity.
+
+> The CI badge stays unknown/failing until a `UNITY_LICENSE` secret is added to
+> the repository — see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+> and the [GameCI activation guide](https://game.ci/docs/github/activation).
 
 ## What this is
 
