@@ -15,11 +15,11 @@ namespace SatyBT
         /// <summary>Create a selector with the given children, in priority order.</summary>
         public Selector(params NodeBase[] children) : base(children) { }
 
-        public override BTStatus Tick()
+        public override BTStatus Tick(float deltaTime)
         {
             for (; _currentChild < ChildCount; _currentChild++)
             {
-                BTStatus status = GetChild(_currentChild).Update();
+                BTStatus status = GetChild(_currentChild).Update(deltaTime);
 
                 if (status == BTStatus.Running)
                     return BTStatus.Running;

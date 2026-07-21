@@ -16,7 +16,7 @@ namespace SatyBT
             _action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
-        public override BTStatus Tick()
+        public override BTStatus Tick(float deltaTime)
         {
             return _action();
         }

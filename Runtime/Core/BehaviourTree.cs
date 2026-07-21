@@ -23,13 +23,14 @@ namespace SatyBT
         }
 
         /// <summary>
-        /// Tick the tree once. Returns the root node's status.
+        /// Tick the tree once, advancing it by <paramref name="deltaTime"/>
+        /// seconds. Returns the root node's status.
         /// </summary>
-        public BTStatus Tick()
+        public BTStatus Tick(float deltaTime)
         {
             TickCount++;
             Injector.ProcessExpirations(TickCount);
-            return Root.Update();
+            return Root.Update(deltaTime);
         }
 
         /// <summary>

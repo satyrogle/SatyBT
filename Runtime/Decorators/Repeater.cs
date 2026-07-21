@@ -20,9 +20,9 @@ namespace SatyBT
             _repeatCount = repeatCount;
         }
 
-        public override BTStatus Tick()
+        public override BTStatus Tick(float deltaTime)
         {
-            BTStatus status = Child.Update();
+            BTStatus status = Child.Update(deltaTime);
 
             if (status == BTStatus.Failure)
                 return BTStatus.Failure;

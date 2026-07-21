@@ -30,8 +30,13 @@ namespace SatyBT
         /// </summary>
         protected virtual void OnAbort() { }
 
-        /// <summary>Evaluate this node. Must return Success, Failure, or Running.</summary>
-        public abstract BTStatus Tick();
+        /// <summary>
+        /// Evaluate this node. Must return Success, Failure, or Running.
+        /// <paramref name="deltaTime"/> is the time in seconds since the
+        /// previous tick, threaded down from the tree so time-based nodes
+        /// (for example cooldowns) need no dependency on UnityEngine.Time.
+        /// </summary>
+        public abstract BTStatus Tick(float deltaTime);
 
         // ── Internal lifecycle tracking ──────────────────────────────
 
@@ -41,7 +46,7 @@ namespace SatyBT
         /// Called by the tree each frame. Manages enter/exit lifecycle
         /// around the subclass <see cref="Tick"/> implementation.
         /// </summary>
-        internal BTStatus Update()
+        internal BTStatus Update(float deltaTime)
         {
             if (!_isRunning)
             {
@@ -49,7 +54,7 @@ namespace SatyBT
                 _isRunning = true;
             }
 
-            BTStatus status = Tick();
+            BTStatus status = Tick(deltaTime);
 
             if (status != BTStatus.Running)
             {

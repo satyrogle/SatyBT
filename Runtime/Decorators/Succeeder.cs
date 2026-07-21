@@ -9,9 +9,9 @@ namespace SatyBT
     {
         public Succeeder(NodeBase child) : base(child) { }
 
-        public override BTStatus Tick()
+        public override BTStatus Tick(float deltaTime)
         {
-            BTStatus status = Child.Update();
+            BTStatus status = Child.Update(deltaTime);
             return status == BTStatus.Running ? BTStatus.Running : BTStatus.Success;
         }
     }

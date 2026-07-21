@@ -18,7 +18,7 @@ namespace SatyBT
             _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
         }
 
-        public override BTStatus Tick()
+        public override BTStatus Tick(float deltaTime)
         {
             return _predicate() ? BTStatus.Success : BTStatus.Failure;
         }

@@ -27,7 +27,7 @@ namespace SatyBT
         private void Update()
         {
             if (Tree == null) return;
-            LastStatus = Tree.Tick();
+            LastStatus = Tree.Tick(Time.deltaTime);
         }
     }
 }
