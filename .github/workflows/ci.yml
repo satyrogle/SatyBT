@@ -6,52 +6,64 @@ on:
   pull_request:
     branches: [ main ]
 
-# NOTE: GameCI needs a Unity license to run. Add a repository secret named
-# UNITY_LICENSE containing the contents of a Personal .ulf license file.
-# Activation guide: https://game.ci/docs/github/activation
-# Until that secret exists this workflow will fail/stay unknown — the badge in
-# the README reflects that.
+# This repo IS a UPM package, not a Unity project, so GameCI cannot open the
+# repo root directly. Instead we scaffold a minimal host project in the runner:
+# the package is checked out under Packages/, a manifest embeds it (plus the
+# test framework), and unity-test-runner points at that project root.
 #
-# This runs the package's own asmdef tests. GameCI treats the repository root
-# as the Unity project; if you consume SatyBT from a separate host project you
-# may prefer to point projectPath at that project instead.
+# GameCI needs a Unity license. Add a repository secret named UNITY_LICENSE
+# containing the contents of a Personal .ulf license file.
+# Activation guide: https://game.ci/docs/github/activation
+#
+# All tests are plain [Test] (edit mode) methods, so only the editmode leg runs.
+# Add a playmode job here if [UnityTest] coroutine tests are introduced later.
 
 jobs:
   test:
-    name: Test (${{ matrix.testMode }})
+    name: Test (editmode)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        testMode: [ editmode, playmode ]
     steps:
-      - name: Checkout
+      - name: Checkout package
         uses: actions/checkout@v4
         with:
           lfs: true
+          path: Packages/com.satyrogle.behaviour-tree
+
+      - name: Scaffold host project
+        run: |
+          # Unity refuses to open a project path with no Assets/ folder.
+          mkdir -p Assets ProjectSettings
+          cat > Packages/manifest.json <<'JSON'
+          {
+            "dependencies": { "com.unity.test-framework": "1.1.33" },
+            "testables": [ "com.satyrogle.behaviour-tree" ]
+          }
+          JSON
+          echo 'm_EditorVersion: 2021.3.45f1' > ProjectSettings/ProjectVersion.txt
 
       - name: Cache Library
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-${{ matrix.testMode }}
+          key: Library-editmode
           restore-keys: |
             Library-
 
-      - name: Run ${{ matrix.testMode }} tests
+      - name: Run editmode tests
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          # Pin to the 2021.3 LTS patch your project uses.
+          # Pin to the 2021.3 LTS patch the package targets.
           unityVersion: 2021.3.45f1
-          testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.testMode }}-artifacts
+          projectPath: .
+          testMode: editmode
+          artifactsPath: editmode-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Test results (${{ matrix.testMode }})
-          path: ${{ matrix.testMode }}-artifacts
+          name: Test results (editmode)
+          path: editmode-artifacts
