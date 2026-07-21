@@ -68,6 +68,12 @@ namespace SatyBT
         /// <summary>Check whether a key exists.</summary>
         public bool Has(string key) => _data.ContainsKey(key);
 
+        /// <summary>
+        /// Read-only view of the stored entries, for tooling such as the
+        /// editor debugger. Do not enumerate this on the tick path.
+        /// </summary>
+        public IReadOnlyDictionary<string, object> Entries => _data;
+
         /// <summary>Remove a key and notify subscribers.</summary>
         public bool Remove(string key)
         {

@@ -82,6 +82,12 @@ namespace SatyBT
         public int ActiveCount => _active.Count;
 
         /// <summary>
+        /// Read-only view of the active injection handles, for tooling such as
+        /// the editor debugger. Do not enumerate this on the tick path.
+        /// </summary>
+        public IReadOnlyCollection<InjectionHandle> ActiveInjections => _active.Values;
+
+        /// <summary>
         /// Called by the tree each tick to expire timed injections.
         /// Uses a pre-allocated list to avoid GC.
         /// </summary>
